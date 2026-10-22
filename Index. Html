@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ice's Birthday Surprise 💗</title>
+
+<style>
+*{box-sizing:border-box}
+:root{--pink:#ff4f87;--cream:#fff7e9}
+body{
+ margin:0;min-height:100vh;text-align:center;
+ font-family:Arial,sans-serif;color:white;
+ background:linear-gradient(135deg,#ff9aaf,#fad0c4,#c8a2ff);
+ overflow-x:hidden
+}
+button{
+ border:0;border-radius:25px;padding:12px 22px;
+ margin:10px;background:var(--pink);color:white;
+ font-size:16px;cursor:pointer;
+ box-shadow:0 5px 12px #8c315033
+}
+button:hover{transform:translateY(-2px)}
+#login{
+ min-height:100vh;display:flex;
+ align-items:center;justify-content:center;padding:20px
+}
+.loginBox{
+ width:min(380px,100%);padding:30px 22px;
+ border-radius:26px;background:#ffffff30;
+ backdrop-filter:blur(12px);box-shadow:0 12px 35px #532b4b25
+}
+.loginBox h1{font-size:29px}
+#password{
+ width:185px;padding:13px;border:0;border-radius:12px;
+ text-align:center;font-size:22px;letter-spacing:7px
+}
+#error{min-height:20px;color:#8d1747;font-weight:bold}
+#surprise{display:none;padding:22px 12px 45px;max-width:720px;margin:auto}
+.mainTitle{font-size:clamp(27px,6vw,38px);margin:10px 0}
+.cakeBox{width:320px;height:300px;max-width:100%;position:relative;margin:auto}
+.heartCake{position:absolute;top:67px;left:25px;width:270px;height:220px}
+.heartShape{
+ position:absolute;inset:0;
+ background:linear-gradient(145deg,#ff80ab,#ff286b);
+ clip-path:polygon(50% 100%,5% 55%,5% 30%,15% 12%,30% 8%,50% 28%,70% 8%,85% 12%,95% 30%,95% 55%);
+ filter:drop-shadow(0 10px 8px #8e174344)
+}
+.cakeTop{
+ position:absolute;left:28px;top:0;width:214px;height:100px;
+ background:linear-gradient(135deg,#ffc0d7,#ff75a8);
+ border-radius:50%;border:4px solid #fff0f5;z-index:2
+}
+.cakeWriting{
+ position:absolute;top:75px;left:0;width:100%;z-index:5;
+ text-shadow:0 1px 3px #a61f50
+}
+.cakeWriting h2{font-size:20px;margin:0}
+.cakeWriting h1{font-size:29px;margin:5px}
+.cakeWriting p{font-size:13px;margin:0}
+.candles{
+ position:absolute;top:12px;left:50%;transform:translateX(-50%);
+ display:flex;gap:13px;z-index:8
+}
+.candle{
+ width:13px;height:48px;position:relative;cursor:pointer;
+ border-radius:4px;
+ background:repeating-linear-gradient(45deg,#fff 0 6px,#ff7aa5 6px 12px)
+}
+.candle:before{
+ content:"";position:absolute;width:12px;height:17px;left:1px;top:-16px;
+ background:#ffd166;border-radius:50% 50% 50% 0;
+ transform:rotate(-45deg);box-shadow:0 0 12px #ffd166;
+ animation:flicker .6s infinite alternate
+}
+.candle.blown:before{display:none}
+@keyframes flicker{
+ to{transform:rotate(-35deg) scale(.85);filter:brightness(1.2)}
+}
+#cakeMsg{min-height:25px}
+#birthdayMessage,#letterSection,#letter,#giftSection,
+#giftMessage,#replaySection{display:none}
+.panel{
+ max-width:500px;margin:22px auto;padding:20px;
+ border-radius:20px;background:#ffffff30;
+ box-shadow:0 8px 25px #6b285522
+}
+#letter{max-width:500px}
+.paper{
+ background:var(--cream);color:#70435a;padding:25px;
+ border-radius:14px;line-height:1.75;
+ box-shadow:0 10px 25px #50244330
+}
+.paper h2{color:#e75480;margin-top:0}
+.giftBox{
+ width:150px;height:130px;position:relative;
+ margin:30px auto 15px;cursor:pointer;
+ animation:bob 1.4s infinite
+}
+.giftBody{
+ position:absolute;bottom:0;left:0;width:150px;height:90px;
+ border-radius:5px;background:linear-gradient(135deg,#ff6f9c,#ed2f6c);
+ box-shadow:0 10px 15px #69214c30
+}
+.giftLid{
+ position:absolute;left:-8px;top:10px;width:166px;height:30px;
+ border-radius:5px;background:#f72f70;z-index:5;transition:transform .65s
+}
+.giftRibbonV{
+ position:absolute;left:62px;bottom:0;width:26px;height:120px;
+ background:#ffdf75;z-index:3
+}
+.giftRibbonH{
+ position:absolute;left:-8px;top:10px;width:166px;height:30px;
+ background:#ffdf75;z-index:6;transition:transform .65s
+}
+.bow{position:absolute;left:51px;top:-9px;width:48px;height:24px;z-index:7}
+.bow:before,.bow:after{
+ content:"";position:absolute;width:25px;height:20px;
+ border:7px solid #ffdf75;border-radius:80% 20% 70% 30%;
+ transform:rotate(25deg)
+}
+.bow:after{left:21px;transform:scaleX(-1) rotate(25deg)}
+.giftBox.open{animation:none}
+.giftBox.open .giftLid{transform:translateY(-80px) rotate(-12deg)}
+.giftBox.open .giftRibbonH{transform:translateY(-80px) rotate(-12deg)}
+#dollStage{
+ display:none;position:relative;width:240px;height:255px;
+ margin:10px auto 5px;animation:dollPop .9s cubic-bezier(.2,1.5,.5,1) both
+}
+.doll{position:absolute;inset:0}
+.dollHairBack{
+ position:absolute;top:27px;left:67px;width:106px;height:125px;
+ border-radius:48% 48% 42% 42%;background:#58334a;z-index:1
+}
+.dollHead{
+ position:absolute;top:35px;left:72px;width:96px;height:100px;
+ border-radius:46% 46% 48% 48%;background:#ffd6bd;
+ z-index:2;border:2px solid #efb69f
+}
+.dollHairTop{
+ position:absolute;top:26px;left:69px;width:103px;height:48px;
+ background:#58334a;border-radius:55% 55% 35% 30%;z-index:3
+}
+.fringe{
+ position:absolute;top:50px;left:77px;width:54px;height:31px;
+ background:#58334a;border-radius:0 0 80% 20%;
+ z-index:4;transform:rotate(-8deg)
+}
+.eye{
+ position:absolute;top:79px;width:8px;height:12px;
+ background:#513247;border-radius:50%;z-index:5
+}
+.eye.left{left:96px}.eye.right{left:137px}
+.cheek{
+ position:absolute;top:99px;width:15px;height:8px;
+ background:#ff9ba9;border-radius:50%;opacity:.8;z-index:5
+}
+.cheek.left{left:83px}.cheek.right{left:143px}
+.smile{
+ position:absolute;top:98px;left:112px;width:17px;height:10px;
+ border-bottom:3px solid #a8495c;border-radius:50%;z-index:5
+}
+.dollBody{
+ position:absolute;top:130px;left:76px;width:88px;height:76px;
+ background:#ff6fa0;clip-path:polygon(25% 0,75% 0,100% 100%,0 100%);z-index:2
+}
+.dollCollar{
+ position:absolute;top:128px;left:105px;width:30px;height:20px;
+ background:#fff4f8;clip-path:polygon(0 0,100% 0,50% 100%);z-index:3
+}
+.arm{
+ position:absolute;top:140px;width:23px;height:58px;
+ background:#ffd6bd;border-radius:20px;z-index:1
+}
+.arm.left{left:61px;transform:rotate(20deg)}
+.arm.right{left:157px;transform:rotate(-20deg)}
+.leg{
+ position:absolute;top:194px;width:23px;height:34px;
+ background:#ffd6bd;border-radius:10px;z-index:1
+}
+.leg.left{left:91px}.leg.right{left:128px}
+.shoe{
+ position:absolute;top:220px;width:30px;height:15px;
+ background:#9b70c9;border-radius:50% 50% 40% 40%;z-index:2
+}
+.shoe.left{left:85px}.shoe.right{left:124px}
+.hairBow{
+ position:absolute;top:29px;left:148px;width:24px;height:17px;
+ background:#ff4f87;border-radius:50%;z-index:6;transform:rotate(20deg)
+}
+.hairBow:after{
+ content:"";position:absolute;left:8px;top:4px;
+ width:8px;height:8px;background:#ffd166;border-radius:50%
+}
+@keyframes dollPop{
+ 0%{opacity:0;transform:translateY(65px) scale(.25)}
+ 70%{opacity:1;transform:translateY(-12px) scale(1.08)}
+ 100%{opacity:1;transform:translateY(0) scale(1)}
+}
+@keyframes bob{
+ 0%,100%{transform:translateY(0)}
+ 50%{transform:translateY(-8px)}
+}
+.heart{
+ position:fixed;bottom:-30px;pointer-events:none;
+ animation:floatUp 5s linear forwards;z-index:10
+}
+@keyframes floatUp{
+ to{transform:translateY(-110vh) rotate(25deg);opacity:0}
+}
+@media(max-width:390px){
+ .cakeBox{transform:scale(.9);transform-origin:top center;margin-bottom:-25px}
+ .mainTitle{font-size:27px}
+}
+</style>
+</head>
+
+<body>
+<div id="login">
+ <div class="loginBox">
+  <h1>🔐 A Little Surprise</h1>
+  <p>A special surprise just for you 💗</p>
+  <input id="password" type="password" inputmode="numeric"
+   maxlength="4" placeholder="••••" aria-label="Enter PIN">
+  <br><button onclick="unlock()">Unlock 💖</button>
+  <div id="error"></div>
+ </div>
+</div>
+
+<main id="surprise">
+ <h1 class="mainTitle">🎂 Happy Birthday, Ice!</h1>
+ <p>A little surprise made with love 💗</p>
+
+ <div class="cakeBox">
+  <div class="candles">
+   <span class="candle" role="button" tabindex="0" onclick="blow(this)" onkeydown="keyBlow(event,this)"></span>
+   <span class="candle" role="button" tabindex="0" onclick="blow(this)" onkeydown="keyBlow(event,this)"></span>
+   <span class="candle" role="button" tabindex="0" onclick="blow(this)" onkeydown="keyBlow(event,this)"></span>
+   <span class="candle" role="button" tabindex="0" onclick="blow(this)" onkeydown="keyBlow(event,this)"></span>
+   <span class="candle" role="button" tabindex="0" onclick="blow(this)" onkeydown="keyBlow(event,this)"></span>
+  </div>
+  <div class="heartCake">
+   <div class="heartShape"></div>
+   <div class="cakeTop"></div>
+   <div class="cakeWriting">
+    <h2>Happy Birthday</h2><div>♡</div>
+    <h1>Ice</h1><p>Happy 22nd Birthday</p>
+   </div>
+  </div>
+ </div>
+
+ <p id="cakeMsg">✨ Tap each candle to blow it out ✨</p>
+
+ <section id="birthdayMessage" class="panel">
+  <h2>🎉 Happy Birthday, Ice! 🎉</h2>
+  <p>Wishing you a beautiful day filled with happiness,
+  laughter and wonderful memories. Keep smiling and enjoy
+  your special day! 💖</p>
+ </section>
+
+ <section id="letterSection">
+  <button onclick="openLetter()">💌 Open Your Birthday Letter</button>
+ </section>
+
+ <section id="letter">
+  <div class="paper">
+   <h2>💌 A Special Birthday Letter</h2>
+   <p>Dear Ice,</p>
+   <p>Today is your special day! 🎂 I hope this birthday brings
+   you lots of happiness, laughter and beautiful memories.</p>
+   <p>May your dreams come true and your coming days be filled
+   with wonderful moments. Never forget how special you are. ✨</p>
+   <p>Keep smiling and enjoy your day! 💗</p>
+   <p>With lots of birthday wishes,</p><p>❤️</p>
+  </div>
+ </section>
+
+ <section id="giftSection" class="panel">
+  <h2>🎁 One More Surprise...</h2>
+  <p>Tap the gift box to open it!</p>
+  <div class="giftBox" id="giftBox" role="button" tabindex="0"
+   aria-label="Open gift box" onclick="openGift()" onkeydown="keyGift(event)">
+   <div class="giftLid"></div>
+   <div class="giftBody"></div>
+   <div class="giftRibbonV"></div>
+   <div class="giftRibbonH"></div>
+   <div class="bow"></div>
+  </div>
+  <div id="giftHint">✨ What's inside? ✨</div>
+
+  <div id="dollStage" aria-label="A cute little girl doll">
+   <div class="doll">
+    <div class="dollHairBack"></div>
+    <div class="arm left"></div><div class="arm right"></div>
+    <div class="leg left"></div><div class="leg right"></div>
+    <div class="shoe left"></div><div class="shoe right"></div>
+    <div class="dollHead"></div><div class="dollHairTop"></div>
+    <div class="fringe"></div>
+    <div class="eye left"></div><div class="eye right"></div>
+    <div class="cheek left"></div><div class="cheek right"></div>
+    <div class="smile"></div><div class="dollBody"></div>
+    <div class="dollCollar"></div><div class="hairBow"></div>
+   </div>
+  </div>
+
+  <div id="giftMessage">
+   <h2>🧸 A Tiny Doll Just for You! 💗</h2>
+   <p>A little cutie with lots of birthday love!</p>
+  </div>
+ </section>
+
+ <section id="replaySection">
+  <button onclick="replay()">💕 Replay the Surprise</button>
+ </section>
+</main>
+
+<script>
+const PIN="2580";
+let blownCount=0,heartsTimer=null,giftOpened=false;
+
+function unlock(){
+ const value=document.getElementById("password").value;
+ if(value===PIN){
+  document.getElementById("login").style.display="none";
+  document.getElementById("surprise").style.display="block";
+  document.getElementById("error").textContent="";
+  startHearts();
+ }else{
+  document.getElementById("error").textContent="Wrong PIN. Try again! 💗";
+ }
+}
+
+document.getElementById("password").addEventListener("keydown",event=>{
+ if(event.key==="Enter")unlock();
+});
+
+function blow(candle){
+ if(candle.classList.contains("blown"))return;
+ candle.classList.add("blown");
+ blownCount++;
+ if(blownCount===5){
+  document.getElementById("cakeMsg").textContent="🎉 All candles are blown out! 🎉";
+  document.getElementById("birthdayMessage").style.display="block";
+  document.getElementById("letterSection").style.display="block";
+ }else{
+  document.getElementById("cakeMsg").textContent="💨 Great! Blow out the rest!";
+ }
+}
+
+function keyBlow(event,candle){
+ if(event.key==="Enter"||event.key===" "){
+  event.preventDefault();blow(candle);
+ }
+}
+
+function openLetter(){
+ document.getElementById("letter").style.display="block";
+ document.getElementById("letterSection").style.display="none";
+ document.getElementById("giftSection").style.display="block";
+ document.getElementById("giftSection").scrollIntoView({behavior:"smooth",block:"center"});
+}
+
+function openGift(){
+ if(giftOpened)return;
+ giftOpened=true;
+ document.getElementById("giftBox").classList.add("open");
+ setTimeout(()=>{
+  document.getElementById("giftHint").style.display="none";
+  document.getElementById("dollStage").style.display="block";
+  document.getElementById("giftMessage").style.display="block";
+  document.getElementById("replaySection").style.display="block";
+  document.getElementById("replaySection").scrollIntoView({behavior:"smooth",block:"center"});
+ },650);
+}
+
+function keyGift(event){
+ if(event.key==="Enter"||event.key===" "){
+  event.preventDefault();openGift();
+ }
+}
+
+function replay(){
+ blownCount=0;giftOpened=false;
+ document.getElementById("surprise").style.display="none";
+ document.getElementById("login").style.display="flex";
+ document.getElementById("password").value="";
+ document.getElementById("error").textContent="";
+ document.getElementById("cakeMsg").textContent="✨ Tap each candle to blow it out ✨";
+
+ ["birthdayMessage","letterSection","letter","giftSection",
+  "dollStage","giftMessage","replaySection"].forEach(id=>{
+  document.getElementById(id).style.display="none";
+ });
+
+ document.getElementById("giftHint").style.display="block";
+ document.getElementById("giftBox").classList.remove("open");
+ document.querySelectorAll(".candle").forEach(candle=>candle.classList.remove("blown"));
+
+ if(heartsTimer){clearInterval(heartsTimer);heartsTimer=null;}
+ document.querySelectorAll(".heart").forEach(heart=>heart.remove());
+}
+
+function startHearts(){
+ if(heartsTimer)return;
+ heartsTimer=setInterval(()=>{
+  if(document.getElementById("surprise").style.display==="none")return;
+  const heart=document.createElement("div");
+  heart.className="heart";
+  heart.textContent=["💗","💕","✨","💖"][Math.floor(Math.random()*4)];
+  heart.style.left=Math.random()*100+"vw";
+  heart.style.fontSize=(14+Math.random()*14)+"px";
+  document.body.appendChild(heart);
+  setTimeout(()=>heart.remove(),5000);
+ },900);
+}
+</script>
+</body>
+</html>
