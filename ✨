@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Birthday Surprise</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;min-height:100vh;text-align:center;
+ font-family:Arial,sans-serif;color:white;
+ background:linear-gradient(135deg,#ff9a9e,#fad0c4,#c8a2ff);
+ overflow-x:hidden
+}
+
+/* LOGIN */
+#login{
+ min-height:100vh;display:flex;
+ justify-content:center;align-items:center
+}
+.loginBox{
+ padding:35px;border-radius:25px;
+ background:rgba(255,255,255,.2);
+ backdrop-filter:blur(10px);
+ box-shadow:0 10px 30px rgba(0,0,0,.2)
+}
+.loginBox h1{font-size:30px}
+input{
+ width:180px;padding:13px;border:0;border-radius:12px;
+ text-align:center;font-size:20px;letter-spacing:6px
+}
+button{
+ border:0;border-radius:20px;padding:12px 22px;
+ margin-top:15px;background:#ff4f81;color:white;
+ font-size:16px;cursor:pointer
+}
+#error{margin-top:10px}
+
+/* MAIN */
+#surprise{display:none;padding:20px 10px}
+.mainTitle{font-size:34px}
+
+/* CAKE */
+.cakeArea{max-width:500px;margin:auto}
+.cakeBox{
+ width:330px;height:330px;margin:15px auto;
+ position:relative
+}
+.heartCake{
+ position:absolute;width:270px;height:245px;
+ left:30px;top:65px
+}
+.heartShape{
+ position:absolute;inset:0;
+ background:linear-gradient(145deg,#ff6f91,#ff3f70);
+ clip-path:polygon(
+  50% 100%,5% 55%,5% 30%,15% 12%,
+  30% 8%,50% 28%,70% 8%,85% 12%,
+  95% 30%,95% 55%
+ );
+ box-shadow:0 12px 20px rgba(0,0,0,.25)
+}
+.cakeWriting{
+ position:absolute;top:75px;width:100%;
+ z-index:5;text-shadow:0 2px 3px #933
+}
+.cakeWriting h2{margin:0;font-size:22px}
+.cakeWriting h1{margin:5px;font-size:30px}
+.cakeWriting p{margin:0;font-size:15px}
+.smallHeart{font-size:20px}
+
+/* CANDLES */
+.candles{
+ position:absolute;top:15px;left:50%;
+ transform:translateX(-50%);
+ display:flex;gap:17px;z-index:20
+}
+.candle{
+ width:14px;height:50px;position:relative;
+ cursor:pointer;border-radius:5px;
+ background:repeating-linear-gradient(
+  45deg,#fff 0 7px,#ff6f91 7px 14px
+ )
+}
+.candle:before{
+ content:"";position:absolute;
+ width:12px;height:18px;background:#ffd166;
+ border-radius:50% 50% 50% 0;
+ transform:rotate(-45deg);top:-17px;left:1px;
+ box-shadow:0 0 12px #ffd166
+}
+.candle.blown:before{display:none}
+
+/* MESSAGE */
+#birthdayMessage,#letterSection,#letter,
+#giftSection,#giftMessage,#replaySection{
+ display:none
+}
+#birthdayMessage{
+ max-width:450px;margin:25px auto;padding:20px;
+ background:rgba(255,255,255,.2);border-radius:20px
+}
+.letterButton{background:#9b59b6}
+
+/* LETTER */
+#letter{max-width:500px;margin:25px auto}
+.paper{
+ background:#fff8e7;color:#633;padding:30px;
+ border-radius:12px;line-height:1.7;
+ box-shadow:0 10px 25px rgba(0,0,0,.25)
+}
+.paper h2{color:#e75480}
+
+/* GIFT */
+#giftSection{margin:35px auto}
+.giftBox{
+ width:150px;height:120px;margin:30px auto;
+ position:relative;cursor:pointer;
+ animation:bounce 1.5s infinite
+}
+.giftBody{
+ position:absolute;bottom:0;width:150px;height:90px;
+ background:#ff4f81;border-radius:6px
+}
+.giftLid{
+ position:absolute;top:10px;left:-8px;
+ width:166px;height:30px;background:#ff2f68;
+ border-radius:6px;z-index:4;transition:.7s
+}
+.giftRibbonV{
+ position:absolute;left:62px;bottom:0;
+ width:26px;height:120px;background:#ffd166;z-index:5
+}
+.giftRibbonH{
+ position:absolute;top:10px;left:-8px;
+ width:166px;height:30px;background:#ffd166;z-index:6
+}
+.giftBox.open{animation:none}
+.giftBox.open .giftLid{
+ transform:translateY(-70px) rotate(-8deg)
+}
+#giftMessage{animation:pop .7s ease}
+.replayButton{background:#ff4081}
+
+/* ANIMATION */
+@keyframes bounce{
+ 0%,100%{transform:translateY(0)}
+ 50%{transform:translateY(-10px)}
+}
+@keyframes pop{
+ from{opacity:0;transform:scale(.6)}
+ to{opacity:1;transform:scale(1)}
+}
+.heart{
+ position:fixed;bottom:-30px;
+ animation:float 5s linear forwards;
+ pointer-events:none
+}
+@keyframes float{
+ from{transform:translateY(0);opacity:1}
+ to{transform:translateY(-110vh);opacity:0}
+}
+
+@media(max-width:500px){
+ .cakeBox{transform:scale(.9);margin-top:0}
+ .mainTitle{font-size:28px}
+}
+</style>
+</head>
+
+<body>
+
+<!-- PASSWORD -->
+<div id="login">
+ <div class="loginBox">
+  <h1>🔐 A Little Surprise</h1>
+  <p>Enter the secret password 💗</p>
+  <input id="password" type="password"
+   maxlength="4" inputmode="numeric" placeholder="••••">
+  <br>
+  <button onclick="unlock()">Unlock 💖</button>
+  <div id="error"></div>
+ </div>
+</div>
+
+<!-- SURPRISE -->
+<div id="surprise">
+
+ <h1 class="mainTitle">🎂 Happy Birthday!</h1>
+
+ <!-- CAKE -->
+ <div class="cakeArea">
+  <div class="cakeBox">
+
+   <div class="candles">
+    <span class="candle" onclick="blow(this)"></span>
+    <span class="candle" onclick="blow(this)"></span>
+    <span class="candle" onclick="blow(this)"></span>
+    <span class="candle" onclick="blow(this)"></span>
+    <span class="candle" onclick="blow(this)"></span>
+   </div>
+
+   <div class="heartCake">
+    <div class="heartShape"></div>
+    <div class="cakeWriting">
+     <h2>Happy Birthday</h2>
+     <div class="smallHeart">♡</div>
+     <h1>Ice</h1>
+     <p>Happy 22nd Birthday</p>
+    </div>
+   </div>
+  </div>
+
+  <p id="cakeMsg">
+   ✨ Touch the candles to blow them out ✨
+  </p>
+
+  <!-- BIRTHDAY MESSAGE -->
+  <div id="birthdayMessage">
+   <h2>🎉 Happy Birthday, Ice! 🎉</h2>
+   <p>
+    Wishing you a beautiful day filled with happiness,
+    smiles and wonderful memories. 💖
+   </p>
+  </div>
+
+  <!-- LETTER BUTTON -->
+  <div id="letterSection">
+   <button class="letterButton" onclick="openLetter()">
+    💌 Open Your Birthday Letter
+   </button>
+  </div>
+
+  <!-- LETTER -->
+  <div id="letter">
+   <div class="paper">
+    <h2>💌 A Special Birthday Letter</h2>
+
+    <p>Dear Ice,</p>
+
+    <p>
+     Today is your special day! 🎂
+     I hope this birthday brings you lots of happiness,
+     laughter and beautiful memories.
+    </p>
+
+    <p>
+     May all your dreams come true and may your coming
+     days be filled with wonderful moments. ✨
+    </p>
+
+    <p>
+     Keep smiling and enjoy your special day! 💖
+    </p>
+
+    <p>
+     With lots of wishes,<br>
+     ❤️
+    </p>
+   </div>
+  </div>
+
+  <!-- GIFT -->
+  <div id="giftSection">
+   <h2>🎁 One More Surprise...</h2>
+
+   <div class="giftBox" onclick="openGift()">
+    <div class="giftLid"></div>
+    <div class="giftBody"></div>
+    <div class="giftRibbonV"></div>
+    <div class="giftRibbonH"></div>
+   </div>
+
+   <p id="giftHint">✨ Tap the gift ✨</p>
+
+   <div id="giftMessage">
+    <h2>✨ Surprise! ✨</h2>
+    <p>One more little surprise just for you! 💖</p>
+   </div>
+  </div>
+
+  <!-- REPLAY -->
+  <div id="replaySection">
+   <button class="replayButton" onclick="replay()">
+    💕 Replay the Surprise
+   </button>
+  </div>
+
+ </div>
+</div>
+
+<script>
+
+let blownCount=0;
+
+/* PASSWORD */
+function unlock(){
+ let password=document.getElementById("password").value;
+
+ if(password==="2580"){
+  document.getElementById("login").style.display="none";
+  document.getElementById("surprise").style.display="block";
+  createHearts();
+ }else{
+  document.getElementById("error").innerHTML=
+   "Wrong password. Try again! ❤️";
+ }
+}
+
+/* CANDLES */
+function blow(candle){
+ if(candle.classList.contains("blown")) return;
+
+ candle.classList.add("blown");
+ blownCount++;
+
+ if(blownCount===5){
+  document.getElementById("cakeMsg").innerHTML=
+   "🎉 All candles are blown out! 🎉";
+
+  document.getElementById("birthdayMessage").style.display="block";
+  document.getElementById("letterSection").style.display="block";
+ }else{
+  document.getElementById("cakeMsg").innerHTML="💨 Keep going!";
+ }
+}
+
+/* LETTER */
+function openLetter(){
+ document.getElementById("letter").style.display="block";
+ document.getElementById("letterSection").style.display="none";
+ document.getElementById("giftSection").style.display="block";
+}
+
+/* GIFT */
+function openGift(){
+ document.querySelector(".giftBox").classList.add("open");
+
+ setTimeout(function(){
+  document.getElementById("giftHint").style.display="none";
+  document.getElementById("giftMessage").style.display="block";
+  document.getElementById("replaySection").style.display="block";
+ },700);
+}
+
+/* REPLAY */
+function replay(){
+ blownCount=0;
+
+ document.getElementById("surprise").style.display="none";
+ document.getElementById("login").style.display="flex";
+ document.getElementById("password").value="";
+ document.getElementById("error").innerHTML="";
+
+ document.getElementById("cakeMsg").innerHTML=
+  "✨ Touch the candles to blow them out ✨";
+
+ document.getElementById("birthdayMessage").style.display="none";
+ document.getElementById("letterSection").style.display="none";
+ document.getElementById("letter").style.display="none";
+ document.getElementById("giftSection").style.display="none";
+ document.getElementById("giftMessage").style.display="none";
+ document.getElementById("giftHint").style.display="block";
+ document.getElementById("replaySection").style.display="none";
+
+ document.querySelector(".giftBox").classList.remove("open");
+
+ document.querySelectorAll(".candle").forEach(function(candle){
+  candle.classList.remove("blown");
+ });
+}
+
+/* FLOATING HEARTS */
+function createHearts(){
+ setInterval(function(){
+  let heart=document.createElement("div");
+  heart.className="heart";
+  heart.innerHTML="💗";
+  heart.style.left=Math.random()*100+"vw";
+  heart.style.fontSize=(15+Math.random()*15)+"px";
+  document.body.appendChild(heart);
+
+  setTimeout(function(){
+   heart.remove();
+  },5000);
+ },800);
+}
+
+</script>
+
+</body>
+</html>
